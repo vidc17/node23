@@ -7,14 +7,15 @@ import {User} from "../entities/user.entity";
 import {UserService} from "../user/user.service";
 import {LocalStrategy} from "./strategies/local.strategy";
 import {JwtModule} from "@nestjs/jwt";
+import {JwtStrategy} from "./strategies/jwt.strategy";
 
 @Module({
   imports: [UserModule, TypeOrmModule.forFeature([User]),
     JwtModule.register({
-      secret: jwtConstants.secret,
-      signOptions: { expiresIn: '60s' },
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '1d' },
     }),],
   controllers: [AuthController],
-  providers: [AuthService, UserService, LocalStrategy]
+  providers: [AuthService, UserService, LocalStrategy, JwtStrategy]
 })
 export class AuthModule {}
