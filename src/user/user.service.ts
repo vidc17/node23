@@ -5,6 +5,7 @@ import {Repository} from "typeorm";
 import { CreateUserDto } from "./dto/create-user.dto";
 import {DeleteResult} from "typeorm/browser";
 import {UpdateUserDto} from "./dto/update-user.dto";
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService{
@@ -18,7 +19,9 @@ export class UserService{
     }
 
     async create(createUserDto: CreateUserDto): Promise <User> {
-        const newUser = this.userRepository.create(createUserDto)
+        const hashed = await bcrypt.hash(createUserDto.password, 10);
+        const data = {createUserDto, password:hashed};
+        const newUser = this.userRepository.create(data);
         return this.userRepository.save(newUser);
     }
     async delete(id:number): Promise<DeleteResult>{
