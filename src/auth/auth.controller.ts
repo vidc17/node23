@@ -4,13 +4,15 @@ import {LoginDto} from "./dto/login.dto";
 import {AuthGuard} from "@nestjs/passport";
 import {UserService} from "../user/user.service";
 import {Response} from "express";
+import {LocalAuthGuard} from "./guards/localAuth.guard";
+import {JwtAuthGuard} from "./guards/jwtAuth.guard";
 
 @Controller('auth')
 export class AuthController {
     constructor(private readonly authService: AuthService) {
     }
 
-    @UseGuards(AuthGuard('local'))
+    @UseGuards(LocalAuthGuard)
     @Post('login')
     signIn(@Request()req, @Res()res:Response){
         const jwt = req.user;
@@ -18,9 +20,14 @@ export class AuthController {
         return req.user;
     }
 
-    @UseGuards(AuthGuard('jwt'))
+    @UseGuards(JwtAuthGuard)
     @Get('profile')
     profile(@Request() req){
         return req.user;
+    }
+
+    @Post('logout')
+    logout(@Request()req):void{
+        req.setHeader("Set-Cookie", 'Access_token=; HttpOnly; Path=/; Max-age=0');
     }
 }
