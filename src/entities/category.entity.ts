@@ -1,5 +1,6 @@
-import {Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
+import {Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
 import {UpdateUserDto} from "../user/dto/update-user.dto";
+import {Blog} from "../blog/entities/blog.entity";
 
 @Entity('categories')
 export class Category {
@@ -17,4 +18,7 @@ export class Category {
 
     @UpdateDateColumn()
     updated_at: Date;
+
+    @OneToMany(() => Blog, (blog: Blog) => blog.category)
+    blogs: Blog[];
 }
